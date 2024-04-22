@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTableUtils", "AzureTableUtils\AzureTableUtils.csproj", "{592E47BD-E6DA-4B1B-9AB0-39B6FA8A4F23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTableUtils.Test", "AzureTableUtils.Tests\AzureTableUtils.Tests.csproj", "{CF074677-AA78-4C17-A849-6DD27ED87DDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTableUtils.IntegrationTests", "AzureTableUtils.IntegrationTests\AzureTableUtils.IntegrationTests.csproj", "{5EA86830-AE78-4A04-9460-272EBC7EAFEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{592E47BD-E6DA-4B1B-9AB0-39B6FA8A4F23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592E47BD-E6DA-4B1B-9AB0-39B6FA8A4F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592E47BD-E6DA-4B1B-9AB0-39B6FA8A4F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592E47BD-E6DA-4B1B-9AB0-39B6FA8A4F23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF074677-AA78-4C17-A849-6DD27ED87DDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF074677-AA78-4C17-A849-6DD27ED87DDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF074677-AA78-4C17-A849-6DD27ED87DDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF074677-AA78-4C17-A849-6DD27ED87DDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA86830-AE78-4A04-9460-272EBC7EAFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA86830-AE78-4A04-9460-272EBC7EAFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA86830-AE78-4A04-9460-272EBC7EAFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA86830-AE78-4A04-9460-272EBC7EAFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

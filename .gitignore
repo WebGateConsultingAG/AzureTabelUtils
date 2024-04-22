@@ -1,0 +1,8 @@
+AzureTableUtils/bin
+AzureTableUtils/obj
+AzureTableUtils.Tests/bin
+AzureTableUtils.Tests/obj
+AzureTableUtils.Tests/TestResults
+AzureTableUtils.IntegrationTests/bin
+AzureTableUtils.IntegrationTests/obj
+AzureTableUtils.IntegrationTests/TestResults

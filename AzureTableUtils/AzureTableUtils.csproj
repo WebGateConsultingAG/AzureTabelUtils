@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>WebGate.Azure.TableUtils</PackageId>
+    <Version>0.1.0-alpha-1</Version>
+    <Authors>guedeWebGate</Authors>
+    <Company>WebGate Consulting AG</Company>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Description>WebGate.Azure.TablesUtils provides extensions to Azure.Data.Table, which allows direct access in the form of CRUD operation to the entities.
+Complex entities, arrays and IEnumerable are also supported.</Description>
+    <Copyright>WebGate Consulting AG</Copyright>
+    <PackageTags>Azure Table</PackageTags>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RepositoryUrl>https://github.com/WebGateConsultingAG/AzureTableUtils.git</RepositoryUrl> 
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Data.Tables" Version="12.8.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+</Project>
