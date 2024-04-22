@@ -15,9 +15,16 @@
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
   </ItemGroup>
+  <PropertyGroup>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
 
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AzureTableUtils\AzureTableUtils.csproj" />
+    <ProjectReference Include="..\AzureTableUtils.Tests\AzureTableUtils.Tests.csproj" />
   </ItemGroup>
 
 </Project>

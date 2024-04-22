@@ -13,7 +13,7 @@ public class SerlializerTests
     {
         SimplePoco spo = SimplePoco.CreateInitializedPoco();
         IDictionary<string, object> allEntities = ObjectSerializer.Serialize(spo);
-        Assert.AreEqual(11, allEntities.Count);
+        Assert.AreEqual(9, allEntities.Count);
         //CHECK ID
         Assert.IsTrue(allEntities.ContainsKey("Id"));
         Assert.AreEqual(allEntities["Id"], spo.Id);
@@ -46,7 +46,7 @@ public class SerlializerTests
     {
         SimplePoco spo = SimplePoco.CreatePocoWithoutID();
         IDictionary<string, object> allEntities = ObjectSerializer.Serialize(spo);
-        Assert.AreEqual(10, allEntities.Count);
+        Assert.AreEqual(8, allEntities.Count);
         Assert.IsFalse(allEntities.ContainsKey("Id"));
 
     }
@@ -56,7 +56,7 @@ public class SerlializerTests
         ParentPoco pp = ParentPoco.CreateParentWithChild();
         IDictionary<string, object> allEntities = ObjectSerializer.Serialize(pp);
         Assert.IsNotNull(pp.Child);
-        Assert.AreEqual(12, allEntities.Count);
+        Assert.AreEqual(10, allEntities.Count);
         Assert.IsTrue(allEntities.ContainsKey("Id"));
 
         Assert.IsTrue(allEntities.ContainsKey("Child_Id"));
@@ -91,7 +91,7 @@ public class SerlializerTests
         Assert.IsNotNull(mwp.Parent);
         Assert.IsNotNull(mwp.Parent.Child);
 
-        Assert.AreEqual(24, allEntities.Count);
+        Assert.AreEqual(20, allEntities.Count);
         Assert.IsTrue(allEntities.ContainsKey("Id"));
 
         Assert.IsTrue(allEntities.ContainsKey("Child_Id"));

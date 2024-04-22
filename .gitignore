@@ -6,3 +6,4 @@ AzureTableUtils.Tests/TestResults
 AzureTableUtils.IntegrationTests/bin
 AzureTableUtils.IntegrationTests/obj
 AzureTableUtils.IntegrationTests/TestResults
+AzureTableUtils.IntegrationTests/test.runsettings

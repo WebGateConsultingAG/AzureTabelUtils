@@ -32,10 +32,14 @@ public static class ObjectBuilder
                 }
                 else
                 {
+                    if (value.GetType().FullName == "System.DateTimeOffset" && pType.FullName == "System.DateTime") {
+                        DateTimeOffset dtoValue = (DateTimeOffset)value;
+                        propertyInfo.SetValue(obj,dtoValue.DateTime, index: null);
+                        return;
+                    }
                     if (pType.IsValueType || pType.Name == "Byte[]" || pType.Name == "String")
                     {
                         propertyInfo.SetValue(obj, value, index: null);
-                        //throw new ConverterException("No convertor found for: " + id + " / " + pType.ToString());
                     } else {
                         object child = RuntimeHelpers.GetUninitializedObject(pType);
                         ProcessObject(child, id, tableEntity);

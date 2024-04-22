@@ -74,7 +74,7 @@ public class TypedAzureTableClient<T>
         };
         return await _tableClient.UpsertEntityAsync(tableEntity,TableUpdateMode.Merge);
     }
-    public async Task<Response> DeleteEntryAsync(string rowKey, string partitionKey)
+    public async Task<Response> DeleteEntityAsync(string rowKey, string partitionKey)
     {
         return await _tableClient.DeleteEntityAsync(partitionKey, rowKey);
     }

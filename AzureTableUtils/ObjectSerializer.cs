@@ -24,7 +24,6 @@ public static class ObjectSerializer
                 IConverter? converter = ConverterFactory.FindConverter(value.GetType());
                 if (converter == null)
                 {
-                    Console.WriteLine("Id: {0}, isValueType: {1}",id,value.GetType().IsValueType);
                     if (value.GetType().IsValueType  || value.GetType().Name == "Byte[]" || value.GetType().Name == "String")
                     {
                         entities.Add(BuildEntityName(path, id), value);

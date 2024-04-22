@@ -6,7 +6,6 @@ public class ArrayConverter : IConverter
 
     public bool IsType(Type type)
     {
-        Console.WriteLine("AC: {0}, Name: {1}", type, type.Name);
         return type.IsArray && type.Name != "Byte[]";
     }
 

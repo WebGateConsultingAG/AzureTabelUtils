@@ -22,10 +22,6 @@ public class SimplePoco
 
     public DateTimeOffset DTOValue { set; get; }
 
-    public uint UIntValue { set; get; }
-
-    public ulong ULongValue { set; get; }
-
     public TimeSpan TimeSpanValue { set; get; }
 
     public SP EnumValue { set; get; }
@@ -41,8 +37,6 @@ public class SimplePoco
             LongValue = 100008937819,
             GuidValue = Guid.NewGuid(),
             DTValue = DateTime.UtcNow,
-            UIntValue = 392,
-            ULongValue = 1999189917819917881,
             TimeSpanValue = new TimeSpan(5, 3, 12),
             EnumValue = SP.INVALID
         };
