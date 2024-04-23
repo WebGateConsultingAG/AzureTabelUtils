@@ -8,13 +8,17 @@ namespace AzureTableUtils.IntegrationTests;
 [TestClass]
 public class CRUDIntegrationTest
 {
-    public TestContext TestContext { get; set; }
-    public string ConnectionString { get; set; }
+    public TestContext? TestContext { get; set; }
+    public string? ConnectionString { get; set; }
 
     [TestInitialize]
     public void TestInitialize()
     {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
         ConnectionString = (string)TestContext.Properties["CONNECTION_STRING"];
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
     }
 
     [TestMethod]
