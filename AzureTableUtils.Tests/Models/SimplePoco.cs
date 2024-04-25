@@ -2,6 +2,11 @@ using System;
 namespace WebGate.Azure.TableUtils.Test;
 
 
+public class SimplePocoPart {
+    public SP EnumValue { set; get; }
+
+}
+
 public enum SP
 {
     VALID,

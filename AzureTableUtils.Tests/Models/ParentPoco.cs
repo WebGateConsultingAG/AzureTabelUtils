@@ -15,4 +15,20 @@ public class ParentPoco
         };
         return pp;
     }
+    public override bool Equals(object? other) {
+        if ((other == null) || !this.GetType().Equals(other.GetType()))
+        {
+            return false;
+        }
+        else
+        {
+            ParentPoco po = (ParentPoco)other;
+            return po.GetHashCode() == this.GetHashCode();
+        }
+    }
+    public override int GetHashCode()
+    {
+        return (Id != null ? Id.GetHashCode() : 0) + (Child != null ?Child.GetHashCode():0);
+    }
+
 }

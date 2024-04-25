@@ -5,6 +5,7 @@ using WebGate.Azure.TableUtils.Converter;
 using System.Runtime.CompilerServices;
 using Azure.Data.Tables;
 using Microsoft.VisualBasic;
+using System.Security.Cryptography;
 
 namespace WebGate.Azure.TableUtils;
 public static class ObjectBuilder
@@ -45,10 +46,24 @@ public static class ObjectBuilder
                         ProcessObject(child, id, tableEntity);
                     }
                 }
+            } else {
+                Type pType = propertyInfo.PropertyType;
+                if (!pType.IsValueType && pType.Name != "Byte[]" || pType.Name != "String") {
+                    if (HasChildObjectInformations(id,tableEntity)) {
+                        object child = RuntimeHelpers.GetUninitializedObject(pType);
+                        ProcessObject(child, id, tableEntity);
+                        propertyInfo.SetValue(obj, child, index: null);
+                    }
+                }
             }
 
         });
 
+    }
+
+    private static bool HasChildObjectInformations(string id, TableEntity tableEntity)
+    {
+        return tableEntity.Where(p=>p.Key.StartsWith(id+"_") && p.Value != null).Count() > 0;
     }
 
     private static string BuildEntityName(string? path, string id)

@@ -53,7 +53,7 @@ public class BuilderTests
         ParentPoco build = ObjectBuilder.Build<ParentPoco>(tableEntity);
         Assert.IsNotNull(build);
         Assert.IsInstanceOfType(build, typeof(ParentPoco));
-
+        Assert.IsNotNull(build.Child);
     }
     [TestMethod]
     public void TestBuildAllEnitiesFromMainWithParent()

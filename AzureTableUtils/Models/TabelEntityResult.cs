@@ -3,20 +3,13 @@ using Azure.Data.Tables;
 
 namespace WebGate.Azure.TableUtils.Models;
 
-public class TableEntityResult<T> {
-    public string RowKey { get; set; }
-    public string PartitionKey {set;get;}
-    public ETag ETag { get; set;}
-    public DateTimeOffset? Timestamp { get; set; }
-    public T Entity { get; set; }
-
-    public TableEntityResult(ITableEntity tableEntity, T entity) {
-        this.PartitionKey = tableEntity.PartitionKey;
-        this.Entity = entity;
-        this.ETag = tableEntity.ETag;
-        this.RowKey = tableEntity.RowKey;
-        this.Timestamp =tableEntity.Timestamp;
-    }
+public class TableEntityResult<T>(ITableEntity tableEntity, T entity)
+{
+    public string RowKey { get; set; } = tableEntity.RowKey;
+    public string PartitionKey { set; get; } = tableEntity.PartitionKey;
+    public ETag ETag { get; set; } = tableEntity.ETag;
+    public DateTimeOffset? Timestamp { get; set; } = tableEntity.Timestamp;
+    public T Entity { get; set; } = entity;
 
     public static TableEntityResult<TCreate> BuildTableEntityResult<TCreate>(TableEntity tableEntity) {
         var businessEntity =  ObjectBuilder.Build<TCreate>(tableEntity);
