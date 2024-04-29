@@ -31,20 +31,59 @@ To get a specific TypeAzureTableClient, use the following approach with the Exte
 ```c#
 var simplePocoAzureTableClient = extendedTableService.GetTypedTableClient<SimplePoco>();
 ```
+### Create and register a MultiEntityAzureTableClient
+The purpose for a MultiEntityAzureTableClient is to store Entities of different types / kinds in one table. The registration of these Types is very easy.
+```c#
+var multiEntityTableClient = _extendedTableService.CreateAndRegisterMultiEntityTableClient("allpocos");
+multiEntityTableClient.RegisterType<SimplePoco>();
+multiEntityTableClient.RegisterType<MainWithParent>("mwp");
+multiEntityTableClient.RegisterType<PocoWihtListChildren>();
+```
+The example registers a MultiEntityAzureTableClient bound to the Table called "allpocos". The types are registered with there TypeName as prefix for the rowkey, with one exception. MainWithParent is registered with "mwp" as prefix.
 
+### Access a the MultiEntityAzureTableClient
+Use the following code to access the registered MultiEntityAzureTableClient:
+```c#
+var multiEntityTableClient = _extendedTableService.GetMultiEntityAzureTableClientByTableName("allpocos");
+```
+The name of the table during registration is your key. Details about the usage of the client, see below.
+
+## TableEntityResult<T>
+Results form TypedAzureTableClient and MultiEntityAzureTableClient are wrapped into the class TableEntityResult. For a result from a TypedAzureTalbeClient is the generic T as the type of the Client, while in a result form a MultiEntityAzureTableClient the Type is always object. The class has the following signature:
+```c#
+public class TableEntityResult<T>(ITableEntity tableEntity, T entity)
+{
+    public string RowKey { get; set; } = tableEntity.RowKey;
+    public string PartitionKey { set; get; } = tableEntity.PartitionKey;
+    public ETag ETag { get; set; } = tableEntity.ETag;
+    public DateTimeOffset? Timestamp { get; set; } = tableEntity.Timestamp;
+    public T Entity { get; set; } = entity;
+ }
+```
 
 ## TypedAzureTableClient
+The TypedAzureTableClient is a Decorator to the AzurTableClient. The main purpose is to extend conversion from and to the defined Entity with the capability for complex entities, arrays and IEnumerable. The client can be initalized via ExtendAzureTableClientService or direct in the code, using the following pattern.
 
-`using WebGate.Azure.CloudTableUtils.CloudTableExtension`
+Get the client from the service:
+```c#
+var typedTableClient = _extendedTableService.GetTypedTableClient<MyPoco>();
+```
 
-This Extension enables you to do CRUD Operations with your Poco direct to the CloudTable. The Poco do not have to extend TableEntity. The Object De/Serialisation is done inside of the functions and DynamicTableEntity are used to store and retrieve data.
+Initialize Inline:
+```c#
+var connectionString = "MY_STRING"; //String to Azure Storage Account V2
+var tableClient = new TableClient(connectionString, "MyPoco"); // From Azure.Data.Table
+await tableClient.CreateIfNotExistsAsync();
+var typedTableClient = new TypedAzureTableClient<MyPoco>(tableClient);
+```
 
+For all Examples, we are using a TypedAzureTableClient bound to MyPoco as generic.
 The following operations are provided:
 
-### GetAllAsync<T>()
+### GetAllAsync()
 
 ```c#
-List<MyPoco> pocos = await cloudTable.GetAllAsync<MyPoco>();
+List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllAsync();
 ```
 
 Gets all data from a table and convert them into the specified Object. No partition key is applied.
@@ -52,7 +91,7 @@ Gets all data from a table and convert them into the specified Object. No partit
 ### GetAllAsync<T>(string partition)
 
 ```c#
-List<MyPoco> pocos = await cloudTable.GetAllAsync<MyPoco>('mypoco');
+List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllAsync('mypoco');
 ```
 
 Gets all data from a table and convert them into the specified Object. A partitionkey is applied. The current example applies 'mypoco' as partitionkey.
@@ -60,26 +99,26 @@ Gets all data from a table and convert them into the specified Object. A partiti
 ### GetByIdAsync<T>(string id)
 
 ```c#
-MyPoco poco = await.GetByIdAsync<MyPoco>('1018301');
+TableEntityResult<MyPoco>? poco = await typedTableClient.GetByIdAsync('1018301');
 ```
 
 Gets as specific entity from the table and convert it to the specified object. The name of the type is used as partitionkey. In the current example 'MyPoco'.
-If the id+partitionkey combination finds now object null is returned (using default(T))
+If the id+partitionkey combination finds now object null is returned.
 
 ### GetByIdAsync<T>(string id, string partition)
 
 ```c#
-MyPoco poco = await.GetByIdAsync<MyPoco>('9201u819','mypoco');
+TableEntityResult<MyPoco>? poco = await typedTableClient.GetByIdAsync('9201u819','mypoco');
 ```
 
 Gets as specific enitity form the table and convert it to the specified object. The partionkey is the 2nd argument.
-If the id+partitionkey combination finds now object null is returned (using default(T))
+If the id+partitionkey combination finds now object null is returned.
 
 ### GetAllByQueryAsync(TableQuery query)
 
 ```c#
-TableQuery<DynamicTableEntity> query = new TableQuery<DynamicTableEntity>();
-List<MyPoco> pocos = await cloudTable.GetAllByQueryAsync<MyPoco>(query);
+var query = $"PartitionKey eq '{partitionKey}'";
+List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllByQueryAsync(query);
 ```
 
 Gets alls entites that matches the query.
@@ -89,28 +128,28 @@ Gets alls entites that matches the query.
 ```c#
 MyPoco poco = new MyPoco();
 // Do magicStuff with poco
-TableResult result = await cloudTable.InsertOrMergeAsync("001", "SimplePoco", poco);
+Azure.Response result = await typedTableClient.InsertOrMergeAsync("001", "SimplePoco", poco);
 ```
 
-Creates or merges a specific object into the cloud table. The selection is done by id and partitionkey.
+Creates or merges a specific object into the table. The selection is done by id and partitionkey.
 
 ### InsertOrReplaceAsync(string id, string partition, object obj)
 
 ```c#
 MyPoco poco = new MyPoco();
 // Do magicStuff with poco
-TableResult result = await cloudTable.InsertOrReplaceAsync("001", "SimplePoco", poco);
+Azure.Response result = await typedTableClient.InsertOrReplaceAsync("001", "SimplePoco", poco);
 ```
 
-Creates or replace a specific object into the cloud table. The selection is done by id and partitionkey.
+Creates or replace a specific object into the table. The selection is done by id and partitionkey.
 
 ### DeleteEntryAsync(string id, string partition)
 
 ```c#
-TableResult result = await cloudTable.DeleteAsync("001", "SimplePoco");
+Azure.Response result = await typedTableClient.DeleteEntityAsync("001", "SimplePoco");
 ```
 
-Deletes a specific object in the cloud table. The selection is done by id and partitionkey.
+Deletes a specific object in the table. The selection is done by id and partitionkey.
 
 ---
 
