@@ -17,6 +17,14 @@ public static class ObjectBuilder
         return result;
 
     }
+    public static object BuildByType(Type typeT, TableEntity tableEntity)
+    {
+        object result =RuntimeHelpers.GetUninitializedObject(typeT);
+        ProcessObject(result, null, tableEntity);
+        return result;
+
+    }
+    
     private static void ProcessObject(object obj, string? path, TableEntity tableEntity)
     {
         obj.GetType().GetProperties().Where(propertyInfo => propertyInfo.CanRead && propertyInfo.CanWrite).ToList().ForEach(propertyInfo =>

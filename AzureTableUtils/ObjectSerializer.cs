@@ -35,7 +35,6 @@ public static class ObjectSerializer
                 }
                 else
                 {
-                    Console.WriteLine("Id: {0}, Converter: {1}",id,converter.GetType().Name);
                     string ep = converter.GetValue(propertyInfo.GetType(),value);
                     entities.Add(BuildEntityName(path, id), ep);
                 }

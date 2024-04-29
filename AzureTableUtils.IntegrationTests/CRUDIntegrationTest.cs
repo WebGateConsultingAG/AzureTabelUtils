@@ -22,7 +22,7 @@ public class CRUDIntegrationTest
     }
 
     [TestMethod]
-    public async Task TestSimplePojoCreateReadDeleted()
+    public async Task TestSimplePocoCreateReadDeleted()
     {
         var tableClient = new TableClient(ConnectionString, "SimplePojoTable");
         await tableClient.CreateIfNotExistsAsync();
@@ -38,7 +38,7 @@ public class CRUDIntegrationTest
         Assert.AreEqual(204, deleteResponse.Status);
     }
     [TestMethod]
-    public async Task TestSimplePojoUpdateAsMerge()
+    public async Task TestSimplePocoUpdateAsMerge()
     {
         var tableClient = new TableClient(ConnectionString, "SimplePojoTable");
         await tableClient.CreateIfNotExistsAsync();
@@ -59,7 +59,7 @@ public class CRUDIntegrationTest
         Assert.AreEqual(204, deleteResponse.Status);
     }
     [TestMethod]
-    public async Task TestSimplePojoUpdateAsReplace()
+    public async Task TestSimplePocoUpdateAsReplace()
     {
         var tableClient = new TableClient(ConnectionString, "SimplePojoTable");
         await tableClient.CreateIfNotExistsAsync();
@@ -81,12 +81,8 @@ public class CRUDIntegrationTest
         Assert.AreEqual(204, deleteResponse.Status);
     }
     [TestMethod]
-    public async Task TestCascadedPojoCreateReadDeleted()
+    public async Task TestCascadedPocoCreateReadDeleted()
     {
-        if (string.IsNullOrEmpty(ConnectionString)) {
-            TestInitialize();
-            Console.WriteLine(ConnectionString);
-        }
         var tableClient = new TableClient(ConnectionString, "Cascaded");
         await tableClient.CreateIfNotExistsAsync();
         var typedTableClient = new TypedAzureTableClient<MainWithParent>(tableClient);

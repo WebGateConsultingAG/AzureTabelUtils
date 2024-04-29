@@ -15,4 +15,9 @@ public class TableEntityResult<T>(ITableEntity tableEntity, T entity)
         var businessEntity =  ObjectBuilder.Build<TCreate>(tableEntity);
         return new TableEntityResult<TCreate>(tableEntity, businessEntity);
     }
+
+    public static TableEntityResult<object> BuildTableEntityResultWithType(Type typeC, TableEntity tableEntity) {
+        var businessEntity =  ObjectBuilder.BuildByType(typeC,tableEntity);
+        return new TableEntityResult<object>(tableEntity, businessEntity);
+    }
 }
