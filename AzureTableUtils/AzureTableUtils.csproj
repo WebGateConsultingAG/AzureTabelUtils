@@ -19,9 +19,13 @@ Complex entities, arrays and IEnumerable are also supported.</Description>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <RepositoryUrl>https://github.com/WebGateConsultingAG/AzureTableUtils.git</RepositoryUrl> 
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.8.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+      <None Include="..\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 </Project>
