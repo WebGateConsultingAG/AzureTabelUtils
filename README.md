@@ -1,55 +1,55 @@
 # WebGate.Azure.TableUtils
 
-WebGate.Azure.TablesUtils provides assets to support Azure.Data.TableClient, which allows direct access in the form of CRUD operation to the entities.
-Complex entities, arrays and IEnumerable are also supported.
+WebGate.Azure.TablesUtils provides assets to support Azure.Data.TableClient, which allows direct access of CRUD operation to the entities.
+Complex entities, arrays and IEnumerable are supported.
 
-The mainfocus for this implementation is the usage in Azure Functions. Therefor access to the tables is mainly done by the ConnectionString. SAS and other authentication methodes are so far not supported. But could be implemented based on the demand.
+The main focus for this implementation is the usage in Azure Functions. Therefore access to the tables is done with the ConnectionString. SAS and other authentication methods are not supported, but can be implemented when required.
 
 ---
 ## ExtendedAzureTableClientService
-The ExtendedAzureTableClientService provides a class to register and acces TypedAczureTableClients and also MultiEntityAzureTableClients.
+The ExtendedAzureTableClientService provides a class to register and access TypedAzureTableClients as well as MultiEntityAzureTableClients.
 
 ### Create a new ExtendedAzureTableClientService
-Given you have a valid connectionString to a AzureStorage Account V2 the creation is straightforward.
+With a valid connectionString to an Azure Storage Account V2, the creation is straightforward.
 
 ```c#
 var connectionString = "MY_STRING";
 var extendedTableService = new ExtendedAzureTableClientService(connectionString);
 ```
 
-We recommend to initalize your ExtendedAzureTableClientSevice in the Startup/Programm.cs in an AzureFunction. The registration of TypedAzureTableClients is straightforward.
+We recommend to initialize your ExtendedAzureTableClientService in the Startup/Program.cs in an Azure Function. The registration of TypedAzureTableClients is straightforward.
 
 ### Create and register some TypedAzureTableClients
-You may have 2 Poco you want to save in 2 different tables. A SimpelPoco and a ParentPoco. To register these 2 Poco with a table for each, do the following:
+You may have 2 Poco you want to save in 2 different tables. A SimplePoco and a ParentPoco. To register these with a table for each, do the following:
 
 ```c#
 var simplePocoAzureTableClient = extendedTableService.CreateAndRegisterTableClient<SimplePoco>("simplePojoTable");
 var parentPocoAzureTableClient = extendedTableService.CreateAndRegisterTableClient<ParentPoco>("parentPojoTable");
 ```
 ### Accessing a TypedAzureTableClient
-To get a specific TypeAzureTableClient, use the following approach with the ExtendedAzureTabbleClientService:
+To get a specific TypeAzureTableClient, use the following approach with the ExtendedAzureTableClientService:
 ```c#
 var simplePocoAzureTableClient = extendedTableService.GetTypedTableClient<SimplePoco>();
 ```
 ### Create and register a MultiEntityAzureTableClient
-The purpose for a MultiEntityAzureTableClient is to store Entities of different types / kinds in one table. The registration of these Types is very easy.
+The purpose for a MultiEntityAzureTableClient is to store entities of different types / kinds into the same table. The registration of these types is very easy.
 ```c#
 var multiEntityTableClient = _extendedTableService.CreateAndRegisterMultiEntityTableClient("allpocos");
 multiEntityTableClient.RegisterType<SimplePoco>();
 multiEntityTableClient.RegisterType<MainWithParent>("mwp");
-multiEntityTableClient.RegisterType<PocoWihtListChildren>();
+multiEntityTableClient.RegisterType<PocoWithListChildren>();
 ```
-The example registers a MultiEntityAzureTableClient bound to the Table called "allpocos". The types are registered with there TypeName as prefix for the rowkey, with one exception. MainWithParent is registered with "mwp" as prefix.
+The example registers a MultiEntityAzureTableClient bound to the table called "allpocos". The types are registered using its TypeName as prefix for the rowkey. MainWithParent is in this example registered with "mwp" as prefix.
 
-### Access a the MultiEntityAzureTableClient
+### Access a MultiEntityAzureTableClient
 Use the following code to access the registered MultiEntityAzureTableClient:
 ```c#
 var multiEntityTableClient = _extendedTableService.GetMultiEntityAzureTableClientByTableName("allpocos");
 ```
-The name of the table during registration is your key. Details about the usage of the client, see below.
+The name of the table during registration is your key. For details about the usage of the client, see below.
 
 ## TableEntityResult<T>
-Results form TypedAzureTableClient and MultiEntityAzureTableClient are wrapped into the class TableEntityResult. For a result from a TypedAzureTalbeClient is the generic T as the type of the Client, while in a result form a MultiEntityAzureTableClient the Type is always object. The class has the following signature:
+Results from TypedAzureTableClient and MultiEntityAzureTableClient are wrapped into the class TableEntityResult. For a result from a TypedAzureTableClient define the type of the client using the generic T. The resulting type from a MultiEntityAzureTableClient is always object. The class has the following signature:
 ```c#
 public class TableEntityResult<T>(ITableEntity tableEntity, T entity)
 {
@@ -62,14 +62,14 @@ public class TableEntityResult<T>(ITableEntity tableEntity, T entity)
 ```
 
 ## TypedAzureTableClient
-The TypedAzureTableClient is a Decorator to the AzurTableClient. The main purpose is to extend conversion from and to the defined Entity with the capability for complex entities, arrays and IEnumerable. The client can be initalized via ExtendAzureTableClientService or direct in the code, using the following pattern.
+The TypedAzureTableClient is a decorator to the AzureTableClient. The main purpose is to extend conversion from and to the defined entity with the capability for complex entities, arrays and IEnumerable's. The client can be initialized via ExtendAzureTableClientService or direct in the code, using the following pattern.
 
 Get the client from the service:
 ```c#
 var typedTableClient = _extendedTableService.GetTypedTableClient<MyPoco>();
 ```
 
-Initialize Inline:
+Initialize inline:
 ```c#
 var connectionString = "MY_STRING"; //String to Azure Storage Account V2
 var tableClient = new TableClient(connectionString, "MyPoco"); // From Azure.Data.Table
@@ -77,7 +77,7 @@ await tableClient.CreateIfNotExistsAsync();
 var typedTableClient = new TypedAzureTableClient<MyPoco>(tableClient);
 ```
 
-For all Examples, we are using a TypedAzureTableClient bound to MyPoco as generic.
+For all examples, we are using a TypedAzureTableClient bound to MyPoco as generic type.
 The following operations are provided:
 
 ### GetAllAsync()
@@ -86,33 +86,33 @@ The following operations are provided:
 List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllAsync();
 ```
 
-Gets all data from a table and convert them into the specified Object. No partition key is applied.
+Gets all data from a table and convert it into the specified object type. No partition key is applied.
 
-### GetAllAsync<T>(string partition)
+### GetAllAsync(string partition)
 
 ```c#
 List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllAsync('mypoco');
 ```
 
-Gets all data from a table and convert them into the specified Object. A partitionkey is applied. The current example applies 'mypoco' as partitionkey.
+Gets all data from a table and convert it into the specified object type. A partition key is applied. The current example applies 'mypoco' as partition key.
 
-### GetByIdAsync<T>(string id)
+### GetByIdAsync(string id)
 
 ```c#
 TableEntityResult<MyPoco>? poco = await typedTableClient.GetByIdAsync('1018301');
 ```
 
-Gets as specific entity from the table and convert it to the specified object. The name of the type is used as partitionkey. In the current example 'MyPoco'.
-If the id+partitionkey combination finds now object null is returned.
+Gets as specific entity from the table and convert it to the specified object. The name of the type (MyPoco in this example) is used as partition key.
+If the id and partition key combination finds no object, null is returned.
 
-### GetByIdAsync<T>(string id, string partition)
+### GetByIdAsync(string id, string partition)
 
 ```c#
 TableEntityResult<MyPoco>? poco = await typedTableClient.GetByIdAsync('9201u819','mypoco');
 ```
 
-Gets as specific enitity form the table and convert it to the specified object. The partionkey is the 2nd argument.
-If the id+partitionkey combination finds now object null is returned.
+Gets as specific entity form the table and convert it to the specified object. The partition key is the 2nd argument.
+If the id and partition key combination finds no object, null is returned.
 
 ### GetAllByQueryAsync(TableQuery query)
 
@@ -121,7 +121,7 @@ var query = $"PartitionKey eq '{partitionKey}'";
 List<TableEntityResult<MyPoco>> pocos = await typedTableClient.GetAllByQueryAsync(query);
 ```
 
-Gets alls entites that matches the query.
+Gets all entities that matches the query.
 
 ### InsertOrMergeAsync(string id, string partition, object obj)
 
@@ -131,7 +131,7 @@ MyPoco poco = new MyPoco();
 Azure.Response result = await typedTableClient.InsertOrMergeAsync("001", "SimplePoco", poco);
 ```
 
-Creates or merges a specific object into the table. The selection is done by id and partitionkey.
+Creates or merges a specific object into the table. The selection is done by id and partition key.
 
 ### InsertOrReplaceAsync(string id, string partition, object obj)
 
@@ -141,7 +141,7 @@ MyPoco poco = new MyPoco();
 Azure.Response result = await typedTableClient.InsertOrReplaceAsync("001", "SimplePoco", poco);
 ```
 
-Creates or replace a specific object into the table. The selection is done by id and partitionkey.
+Creates or replace a specific object into the table. The selection is done by id and partition key.
 
 ### DeleteEntryAsync(string id, string partition)
 
@@ -149,7 +149,104 @@ Creates or replace a specific object into the table. The selection is done by id
 Azure.Response result = await typedTableClient.DeleteEntityAsync("001", "SimplePoco");
 ```
 
-Deletes a specific object in the table. The selection is done by id and partitionkey.
+Deletes a specific object from the table. The selection is done by id and partition key.
+
+## MultiEntityAzureTableClient
+The MultiEntityAzureTableClient is a decorator to the AzureTableClient. The main purpose is to extend the conversion from and to the defined entities with the capability for complex entities, arrays and IEnumerable's. 
+<b>The client adds the functionality to support different entity types in one table.</b>
+The client can be initialized using ExtendAzureTableClientService or direct in the code, using the following pattern.
+
+Get the client from the service:
+```c#
+var multiEntityTableClient = _extendedTableService.GetMultiEntityAzureTableClientByTableName("allpocos");
+```
+
+Initialize inline:
+```c#
+var connectionString = "MY_STRING"; //String to Azure Storage Account V2
+var tableClient = new TableClient(connectionString, "allpocos"); // From Azure.Data.Table
+await tableClient.CreateIfNotExistsAsync();
+var multiEntityTableClient = new MultiEntityAzureTableClient(tableClient);
+multiEntityTableClient.RegisterType<SimplePoco>();
+multiEntityTableClient.RegisterType<MainWithParent>("mwp");
+multiEntityTableClient.RegisterType<PocoWithListChildren>();
+```
+
+For all examples, we are using a MultiEntityAzureTableClient with SimplePoco, MainWithParent und PocoWithListChildren as registered entity types.
+The following operations are provided:
+
+### GetAllAsync()
+
+```c#
+List<TableEntityResult<object>> allPocos = await multiEntityTableClient.GetAllAsync();
+```
+Gets all data from a table and convert them it the specified object. No partition key is applied. To extract a specific entity type, use the following pattern:
+
+```c#
+List<SimplePoco> simplePocos = allPocos.Select(res => res.Entity).OfType<SimplePoco>().ToList();
+```
+
+### GetAllAsync(string partition)
+
+```c#
+List<TableEntityResult<object>> pocos = await multiEntityTableClient.GetAllAsync('mypoco');
+```
+
+Gets all data from a table and convert it into the specified object. A partition key is applied. The current example applies 'mypoco' as partition key. To extract a specific entity type, use the following pattern:
+
+```c#
+List<SimplePoco> simplePocos = allPocos.Select(res => res.Entity).OfType<SimplePoco>().ToList();
+```
+
+### GetByIdAsync\<T>\(string id, string partition)
+
+```c#
+TableEntityResult<MyPoco>? poco = await multiEntityTableClient.GetByIdAsync<MyPoco>('9201u819','mypoco');
+```
+
+Gets as specific entity from the table and convert it to the specified object. The partition key is the 2nd argument.
+If the id and partition key combination finds no object, null is returned.
+
+### GetAllByQueryAsync(string query)
+
+```c#
+var query = $"PartitionKey eq '{partitionKey}'";
+List<TableEntityResult<MyPoco>> pocos = await multiEntityTableClient.GetAllByQueryAsync(query);
+```
+
+Gets alls entities that matches the query. To extract a specific entity type, use the following pattern:
+
+```c#
+List<SimplePoco> simplePocos = allPocos.Select(res => res.Entity).OfType<SimplePoco>().ToList();
+```
+
+### InsertOrMergeAsync(string id, string partition, object obj)
+
+```c#
+MyPoco poco = new MyPoco();
+// Do magicStuff with poco
+Azure.Response result = await multiEntityTableClient.InsertOrMergeAsync("001", "SimplePoco", poco);
+```
+
+Creates or merges a specific object into the table. The selection is done by id and partition key.
+
+### InsertOrReplaceAsync(string id, string partition, object obj)
+
+```c#
+MyPoco poco = new MyPoco();
+// Do magicStuff with poco
+Azure.Response result = await multiEntityTableClient.InsertOrReplaceAsync("001", "SimplePoco", poco);
+```
+
+Creates or replaces a specific object into the table. The selection is done by id and partition key.
+
+### DeleteEntryAsync\<T>\(string id, string partition)
+
+```c#
+Azure.Response result = await multiEntityTableClient.DeleteEntityAsync<SimplePoco>("001", "SimplePoco");
+```
+
+Deletes a specific object from the table. The selection is done by id and partition key. The entity type must be specified, otherwise the client is not capable to calculate the correct row key.
 
 ---
 
