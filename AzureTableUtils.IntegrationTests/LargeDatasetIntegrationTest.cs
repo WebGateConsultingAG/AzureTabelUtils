@@ -10,7 +10,7 @@ public class LargeDatasetIntegrationTest
 {
     public TestContext? TestContext { get; set; }
     public string? ConnectionString { get; set; }
-    public ExtendedAzureTableClientService ExtendedTableService {set;get;}
+    public ExtendedAzureTableClientService? _extendedTableService;
 
     [TestInitialize]
     public void TestInitialize()
@@ -21,14 +21,15 @@ public class LargeDatasetIntegrationTest
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
         Assert.IsNotNull(ConnectionString);
-        ExtendedTableService = new ExtendedAzureTableClientService(ConnectionString);
-        ExtendedTableService.CreateAndRegisterTableClient<SimplePoco>("largescaletest");
+        _extendedTableService = new ExtendedAzureTableClientService(ConnectionString);
+        _extendedTableService.CreateAndRegisterTableClient<SimplePoco>("largescaletest");
     }
 
     [TestMethod]
     public async Task TestSimplePocoCreateRead1500EntriesDeleted()
     {
-        var typedTableClient = ExtendedTableService.GetTypedTableClient<SimplePoco>();
+        Assert.IsNotNull(_extendedTableService);
+        var typedTableClient = _extendedTableService.GetTypedTableClient<SimplePoco>();
         Assert.IsNotNull(typedTableClient);
         var partitionId = Guid.NewGuid().ToString();
         for (int i = 0; i< 1500;i++) {
@@ -53,7 +54,8 @@ public class LargeDatasetIntegrationTest
     [TestCleanup]
     public async Task TestCleanup()
     {
-        var typedTableClient = ExtendedTableService.GetTypedTableClient<SimplePoco>();
+        Assert.IsNotNull(_extendedTableService);
+        var typedTableClient = _extendedTableService.GetTypedTableClient<SimplePoco>();
         var allPocoResult = await typedTableClient.GetAllAsync();
         foreach(var result in allPocoResult) {
             await typedTableClient.DeleteEntityAsync(result.RowKey,result.PartitionKey);

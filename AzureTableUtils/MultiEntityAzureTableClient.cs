@@ -93,12 +93,16 @@ public class MultiEntityAzureTableClient
         };
         return await _tableClient.UpsertEntityAsync(tableEntity,TableUpdateMode.Merge);
     }
-    public async Task<Response> DeleteEntityAsync<T>(string rowKey, string partitionKey)
+    public async Task<Response> DeleteEntityByTypeAsync<T>(string rowKey, string partitionKey)
     {
         if (!_typeRegistry.ContainsKey(typeof(T))) {
             throw new ArgumentOutOfRangeException($"No registered type found for {typeof(T)}.");
         }	
         string prefix = _typeRegistry[typeof(T)];
         return await _tableClient.DeleteEntityAsync(partitionKey, prefix +"_"+rowKey);
+    }
+    public async Task<Response> DeleteEntityAsync(string completeRowKey, string partitionKey)
+    {
+        return await _tableClient.DeleteEntityAsync(partitionKey, completeRowKey);
     }
 }

@@ -43,7 +43,7 @@ public static class ObjectBuilder
                 {
                     if (value.GetType().FullName == "System.DateTimeOffset" && pType.FullName == "System.DateTime") {
                         DateTimeOffset dtoValue = (DateTimeOffset)value;
-                        propertyInfo.SetValue(obj,dtoValue.DateTime, index: null);
+                        propertyInfo.SetValue(obj,DateTime.SpecifyKind(dtoValue.DateTime, DateTimeKind.Utc), index: null);
                         return;
                     }
                     if (pType.IsValueType || pType.Name == "Byte[]" || pType.Name == "String")

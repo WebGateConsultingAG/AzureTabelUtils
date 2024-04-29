@@ -97,4 +97,21 @@ public class CRUDIntegrationTest
         Assert.AreEqual(204, deleteResponse.Status);
     }
 
+    [TestCleanup]
+    public async Task TestCleanup()
+    {
+        await TableCleanup<MainWithParent>("Cascaded");
+        await TableCleanup<SimplePoco>("SimplePojoTable");
+    }
+
+    private async Task TableCleanup<T>(string tableName)
+    {
+        var tableClient = new TableClient(ConnectionString, tableName);
+        var typedTableClient = new TypedAzureTableClient<T>(tableClient);
+        var allPocoResult = await typedTableClient.GetAllAsync();
+        foreach (var result in allPocoResult)
+        {
+            await tableClient.DeleteEntityAsync(result.RowKey, result.PartitionKey);
+        }
+    }
 }
