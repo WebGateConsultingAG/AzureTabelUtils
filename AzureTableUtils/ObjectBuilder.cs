@@ -41,7 +41,7 @@ public static class ObjectBuilder
                 }
                 else
                 {
-                    if (value.GetType().FullName == "System.DateTimeOffset" && pType.FullName == "System.DateTime") {
+                    if (value.GetType().FullName == "System.DateTimeOffset" && IsDateTime(pType)) {
                         DateTimeOffset dtoValue = (DateTimeOffset)value;
                         propertyInfo.SetValue(obj,DateTime.SpecifyKind(dtoValue.DateTime, DateTimeKind.Utc), index: null);
                         return;
@@ -57,7 +57,7 @@ public static class ObjectBuilder
             } else {
                 Type pType = propertyInfo.PropertyType;
                 if (!pType.IsValueType && pType.Name != "Byte[]" || pType.Name != "String") {
-                    if (HasChildObjectInformations(id,tableEntity)) {
+                    if (HasChildObjectInformation(id,tableEntity)) {
                         object child = RuntimeHelpers.GetUninitializedObject(pType);
                         ProcessObject(child, id, tableEntity);
                         propertyInfo.SetValue(obj, child, index: null);
@@ -69,7 +69,7 @@ public static class ObjectBuilder
 
     }
 
-    private static bool HasChildObjectInformations(string id, TableEntity tableEntity)
+    private static bool HasChildObjectInformation(string id, TableEntity tableEntity)
     {
         return tableEntity.Where(p=>p.Key.StartsWith(id+"_") && p.Value != null).Count() > 0;
     }
@@ -82,5 +82,7 @@ public static class ObjectBuilder
         }
         return path + "_" + id;
     }
-
+    private static bool IsDateTime(Type pType) {
+        return pType.FullName == "System.DateTime" || Nullable.GetUnderlyingType(pType) == typeof(DateTime);
+    }
 }
